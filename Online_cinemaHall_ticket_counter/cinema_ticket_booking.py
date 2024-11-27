@@ -1,9 +1,18 @@
 # WHEN A USER HALL CREATE THEN PROPER INTITIAL TIME SET 
+
 from datetime import datetime,timedelta
+#Extra function write such that hall_name show
+
+
+    
+    
 
 class Star_Cinema:
     __hall_list = [] 
-    __view_hall_list=[] 
+    __view_hall_list=[]
+    #Extra function write such that hall_name show
+    __add_hall_name=[] 
+    #--------------------------------------------
    
 
     @classmethod
@@ -13,8 +22,27 @@ class Star_Cinema:
     @classmethod
     def view_halls(cls):
         return cls.__view_hall_list 
-    #working after---->
+    
     #hall info append this list
+    @classmethod
+    def add_view_hall_info(cls,hall_name):
+        cls.__view_hall_list.append(hall_name)
+
+
+    #Extra function write such that hall_name show
+    @classmethod   
+    def get_hall_variable_name(cls,*obj):
+        for obj_name in obj:
+            names=[name for name,val in globals().items() if val is obj and
+            isinstance(val,Hall)]
+            cls.__add_hall_name.append(names)
+    @classmethod
+    def view_hall_name(cls):
+        return cls.__add_hall_name
+        
+    #--------------------------------------------
+  
+
 
 
 
@@ -32,15 +60,18 @@ class Hall(Star_Cinema):
         #added entery hall for passing hall_list
         Star_Cinema.entry_hall(self)
 
+
       # This show are entery in hall class init method are added that private __show_list
       #-----Only Admin Changes-----
     def entry_show(self, id:str, movie_name:str, time:str):
         show_info = (id, movie_name, time) 
         self.__show_list.append(show_info)
-
+        view_info = f"Hall {self.__hall_no}: Movie '{movie_name}' at {time} (Show ID: {id})"
+        Star_Cinema.add_view_hall_info(view_info)
         # attach hall_no depend add the set of hall class
         seat_layout = [[0 for _ in range(self.__cols)] for _ in range(self.__rows)]
         self.__seats[id] = seat_layout  
+
 
         #Anyone set book of the depanded mv id of entry_show
     def book_seats(self,user_mv_id:str,seat_number:tuple):
@@ -81,7 +112,7 @@ kaji_hall.entry_show("112","Robot3.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S
 savana_hall=Hall(10,10,250)
 savana_hall.entry_show("115","AmmJan",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-kaji_hall.view_show_list()
+
 
 
         
