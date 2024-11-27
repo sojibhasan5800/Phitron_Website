@@ -1,7 +1,6 @@
 # WHEN A USER HALL CREATE THEN PROPER INTITIAL TIME SET 
 
 from datetime import datetime,timedelta
-#Extra function write such that hall_name show
 
 
     
@@ -9,36 +8,54 @@ from datetime import datetime,timedelta
 
 class Star_Cinema:
     __hall_list = [] 
-    __view_hall_list=[]
-    #Extra function write such that hall_name show
-    __add_hall_name=[] 
-    #--------------------------------------------
+    __view_hall_show_list=[]
+ 
    
 
     @classmethod
     def entry_hall(cls, hall):
         cls.__hall_list.append(hall)  
-
+    #user check hall in whose moive are avaiable today 
+    @classmethod
+    def _add_hall_show_list(cls,details):
+        cls.__view_hall_show_list.append(details)
     @classmethod
     def view_halls(cls):
-        return cls.__view_hall_list 
+        return cls.__view_hall_show_list
     
-    #hall info append this list
+    #check duplicated same Hall are hall No exited My Optional use
+    __hall_no_store={}
+    
     @classmethod
-    def add_view_hall_info(cls,hall_name):
-        cls.__view_hall_list.append(hall_name)
+    def _hall_no_valueSet(cls,value):
+        cls.__hall_no_store[value]=True
 
-
+    @classmethod
+    def get_hall_no_store(cls):
+        return cls.__hall_no_store
+    
     #Extra function write such that hall_name show
-    @classmethod   
-    def get_hall_variable_name(cls,*obj):
-        for obj_name in obj:
-            names=[name for name,val in globals().items() if val is obj and
-            isinstance(val,Hall)]
-            cls.__add_hall_name.append(names)
-    @classmethod
-    def view_hall_name(cls):
-        return cls.__add_hall_name
+    # __add_hall_name=[] 
+    #--------------------------------------------
+
+    
+    #Extra function write such that hall_name show
+    #hall info append this list
+    # @classmethod
+    # def add_view_hall_info(cls,hall_name):
+    #     cls.__view_hall_list.append(hall_name)
+
+
+    # #Extra function write such that hall_name show
+    # @classmethod   
+    # def get_hall_variable_name(cls,*obj):
+    #     for obj_name in obj:
+    #         names=[name for name,val in globals().items() if val is obj and
+    #         isinstance(val,Hall)]
+    #         cls.__add_hall_name.append(names)
+    # @classmethod
+    # def view_hall_name(cls):
+    #     return cls.__add_hall_name
         
     #--------------------------------------------
   
@@ -50,6 +67,25 @@ class Star_Cinema:
 
 class Hall(Star_Cinema):
     def __init__(self, rows:int, cols:int, hall_no:int):
+
+        
+        #Check duplicated hall no
+        check =False
+        for key, val in Star_Cinema.get_hall_no_store().items():
+            if(key==hall_no):
+                check=True
+                break
+
+        if(check==True):
+            print(f"This hall No: {hall_no} already admin booked")
+            return
+        
+        Star_Cinema._hall_no_valueSet(hall_no)
+           
+            
+        
+        # Sir Optional my creativity error handle of duplicate hall No---- 
+
         super().__init__()  
         self.__seats = {}  
         self.__show_list = [] 
@@ -64,10 +100,12 @@ class Hall(Star_Cinema):
       # This show are entery in hall class init method are added that private __show_list
       #-----Only Admin Changes-----
     def entry_show(self, id:str, movie_name:str, time:str):
+
         show_info = (id, movie_name, time) 
         self.__show_list.append(show_info)
-        view_info = f"Hall {self.__hall_no}: Movie '{movie_name}' at {time} (Show ID: {id})"
-        Star_Cinema.add_view_hall_info(view_info)
+        view_info = f"Hall {id}: Movie '{movie_name}' at {time} (Show ID: {id})"
+        Star_Cinema._add_hall_show_list(view_info)
+
         # attach hall_no depend add the set of hall class
         seat_layout = [[0 for _ in range(self.__cols)] for _ in range(self.__rows)]
         self.__seats[id] = seat_layout  
@@ -89,10 +127,8 @@ class Hall(Star_Cinema):
                 print(f"Movie id->{user_mv_id} are ({row},{col} )is Booked Successfully")
     
     
-    #user check hall in whose moive are avaiable today 
-    def view_show_list(self):
-        for id,moive,time in self.__show_list:
-            print(f"Todays starting Movies are -> Movie_name : {moive}, Movie_id : {id}, Time : {time}")
+  
+    
    
     #user check right hall are seat are avaiable
     def view_avaiable_seats(self,Mv_id:str):
@@ -100,13 +136,24 @@ class Hall(Star_Cinema):
             print(f"This Movie id ->{Mv_id} is not valid place try again latter")
             return
         print(f"Avaiable seats for Show Id -> {Mv_id}:")
+        cnt=0
         for row in range(self.__rows):
             print()
             for col in range(self.__cols):
+                if(self.__seats[Mv_id][row][col]==0):
+                    cnt+=1
                 print(self.__seats[Mv_id][row][col],end=" ")
+        if(cnt==0):
+            print(f"Sorry Sir ! There are not avaiable seat in this show id : {Mv_id}")
+        else:
+            print(f"In this move id : {Mv_id} are {cnt} is empty")
 
 #-----------------admin data set in hall-------------------------->
 kaji_hall=Hall(10,10,250)
+kaji_hall.entry_show("112","Robot3.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+kaji_hall=Hall(10,10,350)
+kaji_hall.entry_show("112","Robot3.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+kaji_hall=Hall(10,10,350)
 kaji_hall.entry_show("112","Robot3.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 savana_hall=Hall(10,10,250)
