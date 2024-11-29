@@ -119,6 +119,7 @@ class Hall(Star_Cinema):
         # attach hall_no depend add the set of hall class
             seat_layout = [[0 for _ in range(self.__cols)] for _ in range(self.__rows)]
             self.__seats[id] = seat_layout  
+            
 
 
         #Anyone set book of the depanded mv id of entry_show
@@ -142,6 +143,7 @@ class Hall(Star_Cinema):
     
    
     #user check right hall are seat are avaiable
+    # @classmethod
     def view_avaiable_seats(self,Mv_id:str):
         if Mv_id not in self.__seats:
             print(f"This Movie id ->{Mv_id} is not valid place try again latter")
@@ -161,57 +163,122 @@ class Hall(Star_Cinema):
 
 #-----------------admin data set in hall-------------------------->
 kaji_hall=Hall(10,10,250)
-kaji_hall.entry_show("112","Robot3.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+kaji_hall.entry_show("250","Robot3.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 kaji_hall=Hall(10,10,350)
-kaji_hall.entry_show("112","IronMan5.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+kaji_hall.entry_show("350","IronMan5.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 kaji_hall=Hall(10,10,350)
 kaji_hall.entry_show("112","Superman",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-savana_hall=Hall(10,10,2550)
-savana_hall.entry_show("115","AmmJan",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+savana_hall=Hall(10,10,450)
+savana_hall.entry_show("450","AmmJan",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 #----------------------- Close Authority Function ----------------------------------
 
+#-----------------------Admin show Fronted data set---------------------------------
+
+#Append display data
+lst=[]
+lst.append("(1) Enter View Hall: ")
+lst.append("(2) Enter Movie Id & Show Avaiable seat: ")
+lst.append("(3) Enter Movie Id & Book seat: ")
+lst.append("(4) Exit: ")
+
+def display_fronted_data_leavcurr_idx(idx):
+    for i in range(len(lst)):
+        if(i!=idx):
+            print(lst[i])
+
+   
+
 #----------------------- User Given Data Checking ----------------------------------
+
+
 def Cheking_User_data(x):
-
-
+    if  x.isalpha():
+        print(f"This {x} is alpha Character Place given integer Number !")
+        return False
+    elif x.isdigit():
+        if not((x>=1 and x<=4)):
+            print(f"Place Sir given This Number (1 to 4) are inclusive")
+            return False
+        else:
+            return True
+    else:
+        print(f"This {x} is Numeric number Place given integer Number !")
+        return False
+        
+    
+def user_diplay_comment(x):
+    pass
 
 
 #-----------User Display Data given------------
 
 while True:
-    print("(1) Enter View Hall: ")
-    print("(2) Enter Movie Id & Show Avaiable seat: ")
-    print("(3) Enter Movie Id & Book seat: ")
-    print("(4) Exit: ")
+
+    for comment in lst:
+        print(comment)
+    
     x = input()
     if( Cheking_User_data(x)):
-        pass
-    else:
-        continue
+        x = int(x)
 
-    if  x.isalpha():
-        print(f"This {x} is alpha Character Place given integer Number !")
-        continue
-    elif x.isnumeric():
-        print(f"This {x} is Numeric number Place given integer Number !")
-        continue
-    else:
-        x=int(x)
-        if not (x>=1 and x<=4):
-            print(f"Place Sir given This Number (1 to 4) are inclusive")
-            continue
+
+        if(x==1):
+            #Enter view hall Display User:(1)
+            print(f" Today Movie are Avaibale Hall 📽️: ")
+            for display_hall in Star_Cinema.view_halls():
+                print(display_hall)
+
+            #(1) leave Another Enter display show
+            while True:
+                display_fronted_data_leavcurr_idx(x)
+                x1a=input()
+                if(Cheking_User_data(x1a)):
+                    x1a =int(x)
+
+                    if(x1a==2):
+                        #Enter Total Seat view hall Display User:(1)
+                        print("Enter Movie Id: ")
+                        Movie_id=input()
+                        Hall.view_avaiable_seats(None,Movie_id)
+                    # (2)  leave Another Enter display show
+                        while True:
+                            display_fronted_data_leavcurr_idx(x1a)
+                            x1b=input()
+                            if(Cheking_User_data(x1b)):
+                                x1b=int(input())
+
+
+                            else:
+                                continue
+
+
+
+                        
+                    elif(x==3):
+                        pass
+                    else:
+                        break
+
+
+                else:
+                    continue
+
+   
+
+        elif(x==2):
+            pass
+
+        elif(x==3):
+            pass
+
         else:
-            if(x==1):
-                #Enter view Hall---->
-                for hall_Movie_details in Star_Cinema.view_halls():
-                    print(hall_Movie_details)
-                print("(2) Enter Movie Id & Show Avaiable seat: ")
-                print("(3) Enter Movie Id & Book seat: ")
-                print("(4) Exit: ")
-                
+            break
+    else:
+        continue
 
-        
+    
+    
 
 
 
