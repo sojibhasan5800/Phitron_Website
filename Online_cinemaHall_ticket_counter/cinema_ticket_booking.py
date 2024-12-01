@@ -37,13 +37,13 @@ class Star_Cinema:
 
     
     #check Movie id are add
-    __movie_id_store=[]
-    @classmethod
-    def _movie_id_add(cls,Movie_id_admin):
-        cls.__movie_id_store.append(Movie_id_admin)
-    @classmethod
-    def _get_movie_id_store(cls):
-        return cls.__movie_id_store
+    # __movie_id_store=[]
+    # @classmethod
+    # def _movie_id_add(cls,Movie_id_admin):
+    #     cls.__movie_id_store.append(Movie_id_admin)
+    # @classmethod
+    # def _get_movie_id_store(cls):
+    #     return cls.__movie_id_store
 
     
     # Hall No seat layout Store for user:
@@ -55,29 +55,48 @@ class Star_Cinema:
         cls.__movie_id_seat_store[Move_id_no]=user_seat_layout
 
     @classmethod
-    def _user_seat_booking(cls,user_mv_id_sent,seat_numbers):
+    def _user_seat_booking(cls,user_mv_id_sent,seat_numbers:dict):
 
         if user_mv_id_sent not in cls.__movie_id_seat_store:
             print("The Movie Id did not match anyone place check id and try again latter!")
-            return
+            return False
 
-        for row,col in seat_numbers:
+        for row,col in seat_numbers.items():
+
+            row= int(row)-1
+            col= int(col)-1
             #key = row and value =col
             movie_id_row= len(cls.__movie_id_seat_store[user_mv_id_sent])
             movie_id_col= len(cls.__movie_id_seat_store[user_mv_id_sent][0])
             #working
             if not (0 <=row<movie_id_row and 0<=col<movie_id_col):
-                print(f"This ({row},{col}) seat Number is Invalid !")
-                continue
+                print(f"This ({row+1},{col+1}) seat Number is Invalid !")
+                print(f"Row Number are (1 to{movie_id_row} inclusive)")
+                print(f"Col Number are (1 to{movie_id_col} inclusive)")
+                print(f"If you again row and col number set than prass 1 :")
+                print(f"Otherwise press 0 :")
+                agains = input()
+                if(agains=="1"):
+                    print(f"Your Movie id is :{user_mv_id_sent}")             
+                    return "row&col_againTry"
+                else:
+                    continue
+
+                
+                
             if cls.__movie_id_seat_store[user_mv_id_sent][row][col]==1:
-                print(f"Movie id ->{user_mv_id_sent} are {row}{col} is Booked place choice another seat NUmber")
+                print(f"Movie id ->{user_mv_id_sent} are {row+1}{col+1} is Booked place choice another seat NUmber")
             else:
                 cls.__movie_id_seat_store[user_mv_id_sent][row][col]=1
-                print(f"Movie id->{user_mv_id_sent} are ({row},{col} )is Booked Successfully")
+                print(f"Movie id->{user_mv_id_sent} are ({row+1},{col+1} )is Booked Successfully")
+        return True
     
 
     @classmethod
     def _get_seat_list(cls,user_mv_id):
+        if user_mv_id not in cls.__movie_id_seat_store:
+            print(f"This Movie id ->{user_mv_id} is not valid try again latter")
+            return False
 
         cnt=0
         for row in range(len(cls.__movie_id_seat_store[user_mv_id])):
@@ -86,10 +105,12 @@ class Star_Cinema:
                 if(cls.__movie_id_seat_store[user_mv_id][row][col]==0):
                     cnt+=1
                 print(cls.__movie_id_seat_store[user_mv_id][row][col],end=" ")
+        print()
         if(cnt==0):
-            print(f"Sorry Sir ! There are not avaiable seat in this show id : {Mv_id}")
+            print(f"Sorry Sir ! There are not avaiable seat in this show id : {user_mv_id}")
         else:
             print(f"In this move id : {user_mv_id} are {cnt} seat is empty")
+        return True
 
 
         
@@ -181,7 +202,7 @@ class Hall(Star_Cinema):
             seat_layout = [[0 for _ in range(self.__cols)] for _ in range(self.__rows)]
             self.__seats[id] = seat_layout  
         # added user display movie id list and this add are seat layout
-            Star_Cinema._movie_id_add(id)
+            
             Star_Cinema._movie_id_seat_add(id,self.__rows,self.__cols)
 
             
@@ -190,31 +211,42 @@ class Hall(Star_Cinema):
         #Anyone set book of the depanded mv id of entry_show
 
     def book_seats(self,user_mv_id:str,seat_number:dict):
-        Star_Cinema._user_seat_booking(user_mv_id,seat_number)
         
         
-    
-  
-    
+        if(Star_Cinema._user_seat_booking(user_mv_id,seat_number)==False):
+            print()
+            return False
+        else:
+            print()
+            return True
+          
    
     #user check right hall are seat are avaiable
     # @classmethod
     def view_avaiable_seats(self,Mv_id:str):
-        if Mv_id not in Star_Cinema._get_movie_id_store():
-            print(f"This Movie id ->{Mv_id} is not valid place try again latter")
-            return
-        print(f"Avaiable seats for Show Id -> {Mv_id}:")
-        Star_Cinema._get_seat_list(Mv_id)
+        
+        print(f"Avaiable seats for Show Id -> {Mv_id}:")      
+        if(Star_Cinema._get_seat_list(Mv_id)==False):
+            print()
+            return False
+        else:
+            print()
+            return True
+        
+        
+        
        
 #-----------------admin data set in hall-------------------------->
 kaji_hall=Hall(10,10,250)
 kaji_hall.entry_show("250","Robot3.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-kaji_hall=Hall(10,10,350)
+kaji_hall=Hall(20,30,350)
 kaji_hall.entry_show("350","IronMan5.0",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-kaji_hall=Hall(10,10,350)
-kaji_hall.entry_show("112","Superman",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-savana_hall=Hall(10,10,450)
+#duplicated data handle used in function
+# kaji_hall=Hall(10,10,350)
+# kaji_hall.entry_show("112","Superman",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+savana_hall=Hall(25,10,450)
 savana_hall.entry_show("450","AmmJan",datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 #----------------------- Close Authority Function ----------------------------------
 
@@ -254,18 +286,22 @@ def Cheking_User_data(x):
 
 
 #-----------User Display Data given------------
+
+print()
 current_idx=None
 while True:
-    display_fronted_data_leavcurr_idx(current_idx)
-    
+    display_fronted_data_leavcurr_idx(current_idx)   
     x = input()
+    print()
     if( Cheking_User_data(x)):
         x = int(x)
+        
         if(x==1):
 
             #Enter view hall Display User:(1)
             current_idx=x-1
             print(f"(1)You are present at View Hall Inside !")
+            print(f"---------------------------------------")
             print()
             print(f" Today Movie are Avaibale Hall 📽️: ")
             print(f" ---------------------------------- ")
@@ -278,33 +314,56 @@ while True:
             #Enter Avaible set list Display User:(2)
             current_idx=x-1
             print(f"(1)You are present at Show Avaiable seat Inside !")
+            print(f"-------------------------------------------------")
             print()
-            print(f"Enter the Movie Id")
-            Move_id = input()
-            Hall.view_avaiable_seats(None,Move_id)
+            while True:
+
+                print(f"Enter the Movie Id")
+                Move_id = input()
+                if(Hall.view_avaiable_seats(None,Move_id)==False):
+                    continue
+                else:
+                    break
+
 
         elif(x==3):
             #Enter Book set list Display User:(2)
             current_idx=x-1
+            print(f"(1)You are present at Booking seat Inside !")
+            print(f"-------------------------------------------")
+            print()
+            # Handle User seat number are Wrong 
+            #WORKING AFTER
+            try_again=False
             while True:
-                print(f"(1)You are present at Booking seat Inside !")
-                print()
-                print("Enter Movie_id")
-                user_movie_id = input()
+                if(try_again==False):
+                    print("Enter Movie_id")
+                    user_movie_id = input()
                 print("Enter Booking seat Number (separate by (,) comma):")
                 seat_id = input()
                 seat_id_spilt = seat_id.split(",")
-                if (seat_id_spilt[0].isdigit() and seat_id_spilt[1].isdigit()):
-                    seat_number_booking={seat_id_spilt[0]: seat_id_spilt[1]}
-                    Hall.book_seats(None,user_movie_id,seat_number_booking)
-                    break
+
+                if (len(seat_id_spilt)==2 and seat_id_spilt[0].isdigit() and seat_id_spilt[1].isdigit()):
+                      
+                      seat_number_booking={seat_id_spilt[0]: seat_id_spilt[1]}
+                      booking_result = Hall._user_seat_booking(user_movie_id,seat_number_booking)
+                      if(booking_result == False):
+                          continue
+                      elif(booking_result == "row&col_againTry"):
+                          try_again = True
+                        #   continue
+                      else:
+                          # Successful booking
+                          break
                 else:
                     print(f"your row: {seat_id_spilt[0]} & col: {seat_id_spilt[1]} are Invalid")
                     print("Place sir row are col Number Only Digit Value")
-                    continue
+                    continue               
+                      
         else:
             print("Exiting system. Goodbye!")
-        
+            print(f"-----------------------")
+            break
 
 
             
@@ -334,4 +393,3 @@ while True:
 
 
    
-
